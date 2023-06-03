@@ -428,7 +428,7 @@ TextureImporter:
         width: 32
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -436,6 +436,27 @@ TextureImporter:
       bones: []
       spriteID: 39374d3c78bb940448f4ccb47ccfd27f
       internalID: 572243299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 33555_16
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 322
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f6fe4b71837d2b94aa6aca49fbd4aeb4
+      internalID: -1473995314
       vertices: []
       indices: 
       edges: []
@@ -459,6 +480,7 @@ TextureImporter:
       33555_13: -454308498
       33555_14: -246577846
       33555_15: 572243299
+      33555_16: -1473995314
       33555_2: 2014715894
       33555_3: 732732281
       33555_4: 591364827
