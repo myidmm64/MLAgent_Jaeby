@@ -74,14 +74,14 @@ public class PlayerAgent : Agent
         while(true)
         {
             BulletUtility.AngleShoot<NormalBullet>(_normalBulletData, PoolType.PlayerNormalBullet, null, transform.position
-                , 6, 90f, _normalBulletData.angle);
+                , 6, 0f, _normalBulletData.angle);
 
             int spe = UnityEngine.Random.Range(1, 4);
             List<NormalBullet> bullets = BulletUtility.AngleShoot<NormalBullet>(_specialBulletData, PoolType.PlayerNormalBullet, null, transform.position
-                , spe, 90f, _specialBulletData.angle);
+                , spe, 0f, _specialBulletData.angle);
 
             for(int i = 0; i < bullets.Count;i++)
-                bullets[i].transform.localScale = new Vector3(0.5f, 2f, 1f);
+                bullets[i].transform.localScale = new Vector3(2f, 0.5f, 1f);
 
             yield return new WaitForSeconds(_shootDelay);
         }

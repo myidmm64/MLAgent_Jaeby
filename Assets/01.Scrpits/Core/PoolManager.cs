@@ -29,6 +29,7 @@ public class PoolManager : MonoSingleTon<PoolManager>
                 PoolableObject poolable = Instantiate(_poolDataSO.poolDatas[i].obj, _rootTrm);
                 poolable.poolType = _poolDataSO.poolDatas[i].poolType;
                 poolable.StartInit();
+                poolable.name =  poolable.name.Replace("(Clone)", "");
                 poolable.gameObject.SetActive(false);
                 _poolDic[poolable.poolType].Enqueue(poolable);
             }
@@ -58,6 +59,7 @@ public class PoolManager : MonoSingleTon<PoolManager>
             poolable.poolType = targetObj.poolType;
             poolable.StartInit();
             poolable.gameObject.SetActive(false);
+            poolable.name = poolable.name.Replace("(Clone)", "");
             _poolDic[poolable.poolType].Enqueue(poolable);
         }
 

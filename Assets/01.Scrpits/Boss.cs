@@ -14,6 +14,9 @@ public class Boss : MonoBehaviour
 
     public Action DieAction = null;
 
+    [SerializeField]
+    private BulletData _bulletData;
+
     private void Awake()
     {
         _gameArea.Player.OnEpisodeBeginAction += Init;
@@ -21,8 +24,21 @@ public class Boss : MonoBehaviour
 
     private void Init()
     {
+        StopAllCoroutines();
         _curHP = _maxHP;
         UIManager.Instance.UpdateBossHP(_gameArea, _maxHP, _curHP);
+        StartCoroutine(BossCoroutine());
+    }
+
+    private IEnumerator BossCoroutine()
+    {
+        for(int i = 0; i < 100; i++)
+        {
+            BulletUtility.AngleShoot<NormalBullet>(_bulletData, PoolType.NormalBullet, null,
+                transform.position, 36, UnityEngine.Random.Range(0, 360f), _bulletData.angle);
+
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     public void Damage(int value)

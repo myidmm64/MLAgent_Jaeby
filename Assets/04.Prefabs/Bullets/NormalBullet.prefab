@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2889007037677887139}
-  - component: {fileID: 2889007037677887140}
-  - component: {fileID: 2889007037677887141}
   - component: {fileID: 2889007037677887143}
+  - component: {fileID: 6279763937467642978}
+  - component: {fileID: 3617012693555842636}
   m_Layer: 0
   m_Name: NormalBullet
   m_TagString: Bullet
@@ -34,7 +34,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &2889007037677887140
+--- !u!114 &2889007037677887143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2889007037677887138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45c279032606f7349a5958f9aa2f8c5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poolType: 0
+--- !u!212 &6279763937467642978
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,7 +99,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &2889007037677887141
+--- !u!58 &3617012693555842636
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,16 +115,3 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.03}
   serializedVersion: 2
   m_Radius: 0.16
---- !u!114 &2889007037677887143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2889007037677887138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45c279032606f7349a5958f9aa2f8c5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  poolType: 0

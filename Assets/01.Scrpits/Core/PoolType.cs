@@ -3,5 +3,6 @@ public enum PoolType
 {
     None,
     NormalBullet,
-    PlayerNormalBullet
+    PlayerNormalBullet,
+    Audio
 }

@@ -19,3 +19,6 @@ MonoBehaviour:
   - spawnCount: 30
     poolType: 2
     obj: {fileID: 1249566716421403304, guid: 36b3114fbce1f554183294d69772bd2a, type: 3}
+  - spawnCount: 10
+    poolType: 3
+    obj: {fileID: 6269184460116084755, guid: e51442d2bb0183e4393b8a484706ed32, type: 3}

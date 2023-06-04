@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class Bullet : PoolableObject
 {
+    [SerializeField]
     private SpriteRenderer _spriteRenderer = null;
     protected float _speed = 0f;
 
@@ -18,14 +19,15 @@ public abstract class Bullet : PoolableObject
 
     public override void StartInit()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        if(_spriteRenderer == null)
+            _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void BulletInit(Sprite bulletSprite, Transform parent, Vector3 position, Quaternion rot, float startSpeed)
+    public virtual void BulletInit(Sprite bulletSprite, Transform parent, Vector3 position, Quaternion rot, float startSpeed)
     {
-        _spriteRenderer.sprite = bulletSprite;
         transform.SetParent(parent);
         transform.SetPositionAndRotation(position, rot);
+        _spriteRenderer.sprite = bulletSprite;
         _speed = startSpeed;
     }
 
