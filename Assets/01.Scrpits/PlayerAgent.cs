@@ -127,8 +127,7 @@ public class PlayerAgent : Agent
 
     public void Damaged(int value)
     {
-        _hp -= value;
-        _hp = Mathf.Clamp(_hp, 0, _maxHp);
+        _hp = Mathf.Clamp(_hp - value, 0, _maxHp);
         UIManager.Instance.UpdatePlayerHP(_gameArea);
         if(_hp <= 0)
         {
@@ -141,7 +140,7 @@ public class PlayerAgent : Agent
         if (collision.CompareTag("Bullet"))
         {
             _gameArea.DestoryAllBullet();
-            Damaged(0);
+            Damaged(1);
         }
     }
 

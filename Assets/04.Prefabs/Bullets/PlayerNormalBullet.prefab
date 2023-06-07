@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolType: 0
   _spriteRenderer: {fileID: 6846229848272192425}
+  _col: {fileID: 8043050534495825340}
 --- !u!58 &8043050534495825340
 CircleCollider2D:
   m_ObjectHideFlags: 0

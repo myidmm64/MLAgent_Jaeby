@@ -23,7 +23,7 @@ public class Boss : MonoBehaviour
     private Animator _animator = null;
 
     [Space(20f)]
-    [Header("1페이즈")]
+    [Header("패턴1")]
     [SerializeField]
     private int _moveCount = 5;
     [SerializeField]
@@ -33,6 +33,17 @@ public class Boss : MonoBehaviour
     [SerializeField]
     private float _circleShootDelay = 0.5f;
 
+    [Space(20f)]
+    [Header("패턴2")]
+    [SerializeField]
+    private BulletData _spawnBulletData;
+    [SerializeField]
+    private int _spawnBulletCount = 2;
+    [SerializeField]
+    private float _spawnBulletStartAngle = 0f;
+    [SerializeField]
+    private float _spawnBulletAngle = 180f;
+
     private void Awake()
     {
         _gameArea.Player.OnEpisodeBeginAction += Init;
@@ -41,22 +52,49 @@ public class Boss : MonoBehaviour
 
     private void Init()
     {
-        foreach (var seq in _bossSequences.Values)
-            seq.Kill();
-        _bossSequences.Clear();
-        StopAllCoroutines();
-        _bossCoroutines.Clear();
+        PatternsReset();
 
+        MoveAnimationPlay(0);
+        transform.DOKill();
         transform.position = _originPosition;
         _curHP = _maxHP;
         UIManager.Instance.UpdateBossHP(_gameArea, _maxHP, _curHP);
         PhaseOne();
+        //PhaseTwo();
+    }
+
+    private void PatternsReset()
+    {
+        foreach (var seq in _bossSequences.Values)
+            seq.Kill();
+        foreach (var coroutine in _bossCoroutines.Values)
+            StopCoroutine(coroutine);
+        _bossSequences.Clear();
+        _bossCoroutines.Clear();
     }
 
     private void PhaseOne()
     {
         _bossCoroutines.Add("CircleShoot", StartCoroutine(CircleShootCoroutine()));
         _bossCoroutines.Add("RandomMove", StartCoroutine(RandomMoveCoroutine()));
+    }
+
+    private void PhaseTwo()
+    {
+        PatternsReset();
+        StartCoroutine(asddsa());
+    }
+
+    private IEnumerator asddsa()
+    {
+        while(true)
+        {
+            List<MovingBulletSpawner> movingBulletSpawners = BulletUtility.CircleShoot<MovingBulletSpawner>(_gameArea,
+                _spawnBulletData, PoolType.MovingBulletSpawner, null, transform.position, 3);
+            foreach (var i in movingBulletSpawners)
+                i.SpawnStart(0.3f, _spawnBulletData, _spawnBulletCount, _spawnBulletStartAngle, _spawnBulletAngle);
+            yield return new WaitForSeconds(1f);
+        }
     }
 
     private IEnumerator RandomMoveCoroutine()
@@ -73,6 +111,7 @@ public class Boss : MonoBehaviour
             yield return new WaitForSeconds(_moveDelay);
         }
         moveSeq.Append(transform.DOMove(_originPosition, _moveDelay));
+        moveSeq.AppendCallback(() => PhaseTwo());
         StopCoroutine(_bossCoroutines["CircleShoot"]);
         MoveAnimationPlay(0);
     }

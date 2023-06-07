@@ -15,7 +15,7 @@ public static class BulletUtility
         {
             T bullet = PoolManager.Instance.Pop<T>(poolType);
             bullet.BulletInit(area, bulletData.sptire, parent, pos, 
-                Quaternion.Euler(0, 0, ((startAngle - angle * (count / 3)) + i * angle)), bulletData.speed);
+                Quaternion.Euler(0, 0, ((startAngle - angle * (count / 3)) + i * angle)), bulletData.speed, bulletData.colliderRadius);
             result.Add(bullet);
         }
         return result;
@@ -29,9 +29,9 @@ public static class BulletUtility
         {
             T bullet = PoolManager.Instance.Pop<T>(poolType);
             bullet.BulletInit(area, bulletData.sptire, parent, pos,
-                Quaternion.Euler(0, 0, angleDistance * i), bulletData.speed);
+                Quaternion.Euler(0, 0, angleDistance * i), bulletData.speed, bulletData.colliderRadius);
             result.Add(bullet);
         }
-        return null;
+        return result;
     }
 }
