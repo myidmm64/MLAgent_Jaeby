@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolType: 0
+  _spriteRenderer: {fileID: 0}
 --- !u!212 &6279763937467642978
 SpriteRenderer:
   m_ObjectHideFlags: 0

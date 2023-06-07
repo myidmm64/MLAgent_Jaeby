@@ -23,9 +23,11 @@ public abstract class Bullet : PoolableObject
             _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public virtual void BulletInit(Sprite bulletSprite, Transform parent, Vector3 position, Quaternion rot, float startSpeed)
+    public virtual void BulletInit(GameArea area, Sprite bulletSprite, Transform parent, Vector3 position, Quaternion rot, float startSpeed)
     {
-        transform.SetParent(parent);
+        transform.SetParent(area.BulletFactory);
+        if(parent != null)
+            transform.SetParent(parent);
         transform.SetPositionAndRotation(position, rot);
         _spriteRenderer.sprite = bulletSprite;
         _speed = startSpeed;

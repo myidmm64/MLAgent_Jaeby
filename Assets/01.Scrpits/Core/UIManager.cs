@@ -62,6 +62,8 @@ public class UIManager : MonoSingleTon<UIManager>
         if (_mainGameArea != area)
             return;
 
+        //foreach(var obj in GetComponentInChildren<Transform>())
+        //    Destroy(obj.)
         List<GameObject> childs = new List<GameObject>();
         for(int i = 0; i < _hpParentTrm.childCount; i++)
             childs.Add(_hpParentTrm.GetChild(i).gameObject);

@@ -62,10 +62,10 @@ public class PlayerAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        _hp = _maxHp;
         StopAllCoroutines();
         StartCoroutine(ShootCoroutine());
 
+        _hp = _maxHp;
         OnEpisodeBeginAction?.Invoke();
     }
 
@@ -73,11 +73,11 @@ public class PlayerAgent : Agent
     {
         while(true)
         {
-            BulletUtility.AngleShoot<NormalBullet>(_normalBulletData, PoolType.PlayerNormalBullet, null, transform.position
+            BulletUtility.AngleShoot<NormalBullet>(_gameArea, _normalBulletData, PoolType.PlayerNormalBullet, null, transform.position
                 , 6, 0f, _normalBulletData.angle);
 
             int spe = UnityEngine.Random.Range(1, 4);
-            List<NormalBullet> bullets = BulletUtility.AngleShoot<NormalBullet>(_specialBulletData, PoolType.PlayerNormalBullet, null, transform.position
+            List<NormalBullet> bullets = BulletUtility.AngleShoot<NormalBullet>(_gameArea, _specialBulletData, PoolType.PlayerNormalBullet, null, transform.position
                 , spe, 0f, _specialBulletData.angle);
 
             for(int i = 0; i < bullets.Count;i++)
@@ -139,7 +139,19 @@ public class PlayerAgent : Agent
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Bullet"))
-            Damaged(1);
+        {
+            _gameArea.DestoryAllBullet();
+            Damaged(0);
+        }
+    }
+
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            EndEpisode();
+        }
     }
 }
 
