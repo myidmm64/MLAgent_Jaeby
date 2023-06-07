@@ -71,16 +71,16 @@ public class PlayerAgent : Agent
 
     private IEnumerator ShootCoroutine()
     {
-        while(true)
+        while (true)
         {
-            BulletUtility.AngleShoot<NormalBullet>(_gameArea, _normalBulletData, PoolType.PlayerNormalBullet, null, transform.position
-                , 6, 0f, _normalBulletData.angle);
+            BulletUtility.AngleShoot<NormalBullet>(_gameArea, _normalBulletData, transform.position
+                , 6, 0f, 3f);
 
             int spe = UnityEngine.Random.Range(1, 4);
-            List<NormalBullet> bullets = BulletUtility.AngleShoot<NormalBullet>(_gameArea, _specialBulletData, PoolType.PlayerNormalBullet, null, transform.position
-                , spe, 0f, _specialBulletData.angle);
+            List<NormalBullet> bullets = BulletUtility.AngleShoot<NormalBullet>(_gameArea, _specialBulletData, transform.position
+                , spe, 0f, 6f);
 
-            for(int i = 0; i < bullets.Count;i++)
+            for (int i = 0; i < bullets.Count; i++)
                 bullets[i].transform.localScale = new Vector3(2f, 0.5f, 1f);
 
             yield return new WaitForSeconds(_shootDelay);
@@ -98,10 +98,10 @@ public class PlayerAgent : Agent
         _obAnimator.SetInteger("Shift", actions.DiscreteActions.Array[0]);
 
         float speed = _normalSpeed;
-        if(_moveState == MoveState.Slow)
+        if (_moveState == MoveState.Slow)
             speed = _slowSpeed;
 
-        if(oldState != _moveState)
+        if (oldState != _moveState)
         {
             float targetAlpha = _moveState == MoveState.Slow ? 1f : 0f;
             if (_fadeSeq != null)
@@ -129,7 +129,7 @@ public class PlayerAgent : Agent
     {
         _hp = Mathf.Clamp(_hp - value, 0, _maxHp);
         UIManager.Instance.UpdatePlayerHP(_gameArea);
-        if(_hp <= 0)
+        if (_hp <= 0)
         {
             EndEpisode();
         }
@@ -147,7 +147,7 @@ public class PlayerAgent : Agent
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             EndEpisode();
         }

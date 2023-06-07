@@ -8,6 +8,11 @@ using Random = UnityEngine.Random;
 public class Boss : MonoBehaviour
 {
     [SerializeField]
+    private string StartPhase = "One";
+    private readonly Vector2 MinBoundary = new Vector2(-4f, -4f);
+    private readonly Vector2 MaxBoundary = new Vector2(4f, 4f);
+
+    [SerializeField]
     private GameArea _gameArea = null;
     private Dictionary<string, Coroutine> _bossCoroutines = new Dictionary<string, Coroutine>();
     private Dictionary<string, Sequence> _bossSequences = new Dictionary<string, Sequence>();
@@ -36,7 +41,13 @@ public class Boss : MonoBehaviour
     [Space(20f)]
     [Header("∆–≈œ2")]
     [SerializeField]
+    private BulletData _spinShootData;
+    [SerializeField]
+    private BulletData _bigBulletData;
+    [SerializeField]
     private BulletData _spawnBulletData;
+    [SerializeField]
+    private BulletData _spawningData;
     [SerializeField]
     private int _spawnBulletCount = 2;
     [SerializeField]
@@ -59,8 +70,7 @@ public class Boss : MonoBehaviour
         transform.position = _originPosition;
         _curHP = _maxHP;
         UIManager.Instance.UpdateBossHP(_gameArea, _maxHP, _curHP);
-        PhaseOne();
-        //PhaseTwo();
+        Invoke("Phase" + StartPhase, 0f);
     }
 
     private void PatternsReset()
@@ -75,62 +85,95 @@ public class Boss : MonoBehaviour
 
     private void PhaseOne()
     {
-        _bossCoroutines.Add("CircleShoot", StartCoroutine(CircleShootCoroutine()));
-        _bossCoroutines.Add("RandomMove", StartCoroutine(RandomMoveCoroutine()));
+        _bossCoroutines.Add("PhaseOne", StartCoroutine(PhaseOneCoroutine()));
     }
 
     private void PhaseTwo()
     {
-        PatternsReset();
-        StartCoroutine(asddsa());
+        _bossCoroutines.Add("PhaseTwo", StartCoroutine(PhaseTwoCoroutine()));
     }
 
-    private IEnumerator asddsa()
-    {
-        while(true)
-        {
-            List<MovingBulletSpawner> movingBulletSpawners = BulletUtility.CircleShoot<MovingBulletSpawner>(_gameArea,
-                _spawnBulletData, PoolType.MovingBulletSpawner, null, transform.position, 3);
-            foreach (var i in movingBulletSpawners)
-                i.SpawnStart(0.3f, _spawnBulletData, _spawnBulletCount, _spawnBulletStartAngle, _spawnBulletAngle);
-            yield return new WaitForSeconds(1f);
-        }
-    }
-
-    private IEnumerator RandomMoveCoroutine()
+    private IEnumerator PhaseOneCoroutine()
     {
         yield return new WaitForSeconds(1f);
+        _bossCoroutines.Add("CircleShoot", StartCoroutine(CircleShootCoroutine()));
+        RandomMove(_moveCount, PhaseTwo);
+    }
 
+    private IEnumerator PhaseTwoCoroutine()
+    {
+        PatternsReset();
+        _bossCoroutines.Add("SpinBulletShoot", StartCoroutine(SpinBulletShoot()));
+        yield return null;
+    }
+
+    private IEnumerator SpinBulletShoot()
+    {
+        for (int i = 0; i < 360; i += 5)
+        {
+            BulletUtility.BulletSpawn<NormalBullet>(_gameArea, _spinShootData, transform.position, Quaternion.Euler(0f, 0f, i));
+            BulletUtility.BulletSpawn<NormalBullet>(_gameArea, _spinShootData, transform.position, Quaternion.Euler(0f, 0f, 360 - i));
+            yield return new WaitForSeconds(0.025f);
+        }
+        RandomMove(3);
+
+        for (int i = 0; i < 6; i++)
+        {
+            BulletUtility.BulletSpawn<NormalBullet>(_gameArea, _bigBulletData, transform.position, BulletUtility.LookTarget(transform.position, _gameArea.Player.transform.position));
+            BulletUtility.BulletSpawn<NormalBullet>(_gameArea, _bigBulletData, transform.position, Quaternion.Euler(0f, 0f, 30f) * BulletUtility.LookTarget(transform.position, _gameArea.Player.transform.position));
+            BulletUtility.BulletSpawn<NormalBullet>(_gameArea, _bigBulletData, transform.position, Quaternion.Euler(0f, 0f, -30f) * BulletUtility.LookTarget(transform.position, _gameArea.Player.transform.position));
+            yield return new WaitForSeconds(_moveDelay * 0.5f);
+        }
+
+        for(int i = 0; i < 4; i++)
+        {
+            BulletUtility.BulletSpawn<MovingBulletSpawner>(_gameArea, _spawnBulletData, _originPosition, Quaternion.Euler(0f, 0f, 90f * i))
+                .SpawnStart(0.5f, _spawningData, _spawnBulletCount, _spawnBulletStartAngle, _spawnBulletAngle);
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            BulletUtility.BulletSpawn<MovingBulletSpawner>(_gameArea, _spawnBulletData, _originPosition, Quaternion.Euler(0f, 0f, 90f * i + 45f))
+                .SpawnStart(1f, _spawningData, _spawnBulletCount, _spawnBulletStartAngle, _spawnBulletAngle);
+        }
+    }
+
+    private void RandomMove(int count, Action Callback = null)
+    {
         _bossSequences.Add("RandomMove", DOTween.Sequence());
         Sequence moveSeq = _bossSequences["RandomMove"];
-        for (int i = 0; i < _moveCount; i++)
+        for (int i = 0; i < count; i++)
         {
-            Vector3 randomPosition = new Vector3(Random.Range(-4f, 4f), Random.Range(1.8f, 4f), 0f);
-            moveSeq.Append(transform.DOMove(randomPosition, _moveDelay));
-            MoveAnimationPlay((randomPosition.x - transform.position.x) < 0 ? -1 : 1);
-            yield return new WaitForSeconds(_moveDelay);
+            Vector3 randomPosition = new Vector3(Random.Range(MinBoundary.x, MaxBoundary.x), Random.Range(1.8f, MaxBoundary.y), 0f);
+            moveSeq.Append(transform.DOMove(randomPosition, _moveDelay).OnStart(() =>
+            {
+                MoveAnimationPlay((randomPosition.x - transform.position.x) < 0 ? -1 : 1);
+            }));
         }
-        moveSeq.Append(transform.DOMove(_originPosition, _moveDelay));
-        moveSeq.AppendCallback(() => PhaseTwo());
-        StopCoroutine(_bossCoroutines["CircleShoot"]);
-        MoveAnimationPlay(0);
+        moveSeq.Append(transform.DOMove(_originPosition, _moveDelay))
+            .OnComplete(() =>
+            {
+                StopCoroutine(_bossCoroutines["CircleShoot"]);
+                MoveAnimationPlay(0);
+                Callback?.Invoke();
+            });
     }
 
     private IEnumerator CircleShootCoroutine()
     {
-        yield return new WaitForSeconds(1f);
-
+        BulletData data = _circleShootData;
+        data.startSpeed *= 0.9f;
+        data.endSpeed *= 0.9f;
         for (int i = 0; i < 100; i++)
         {
             yield return new WaitForSeconds(_circleShootDelay);
 
-            BulletUtility.CircleShoot<NormalBullet>(_gameArea, _circleShootData, PoolType.NormalBullet, null,
-                transform.position, 36);
+            BulletUtility.CircleShoot<NormalBullet>(_gameArea, _circleShootData,
+                transform.position, 36, 0f);
 
             BulletUtility.CircleShoot<NormalBullet>(_gameArea,
-                new BulletData { sptire = _circleShootData.sptire, speed = _circleShootData.speed * 0.9f }
-                , PoolType.NormalBullet, null,
-                transform.position, 36);
+                data
+                , transform.position, 36, 15f);
         }
     }
 

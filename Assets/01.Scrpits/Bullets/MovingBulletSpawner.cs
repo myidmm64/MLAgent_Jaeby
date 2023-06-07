@@ -1,13 +1,10 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MovingBulletSpawner : Bullet
 {
-    public override void BulletInit(GameArea area, Sprite bulletSprite, Transform parent, Vector3 position, Quaternion rot, float startSpeed, float? colliderRadius = null)
-    {
-        base.BulletInit(area, bulletSprite, parent, position, rot, startSpeed, colliderRadius);
-    }
 
     public void SpawnStart(float time, BulletData data, int count, float startAngle, float angle)
     {
@@ -16,11 +13,10 @@ public class MovingBulletSpawner : Bullet
 
     private IEnumerator SpawnCoroutine(float time, BulletData data, int count, float startAngle, float angle)
     {
-        while(true)
+        while (true)
         {
             yield return new WaitForSeconds(time);
-            BulletUtility.AngleShoot<NormalBullet>(_area, data, PoolType.NormalBullet, _area.BulletFactory, transform.position,
-                count, startAngle, angle);
+            BulletUtility.AngleShoot<NormalBullet>(_area, data, transform.position, count, transform.localRotation.eulerAngles.z + startAngle, angle);
         }
     }
 
@@ -28,7 +24,7 @@ public class MovingBulletSpawner : Bullet
     {
         base.PushInit();
         StopAllCoroutines();
-        //StopCoroutine(_spawnCoroutine);
+        transform.DOKill();
     }
 
     protected override void MoveBullet()

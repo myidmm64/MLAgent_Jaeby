@@ -4132,24 +4132,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f870e9a183a176428885687fd6e0b30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StartPhase: Two
   _gameArea: {fileID: 1488670376}
   _maxHP: 10000
   _originPosition: {x: 0, y: 3, z: 0}
-  _moveCount: 20
-  _moveDelay: 0.7
+  _moveCount: 10
+  _moveDelay: 0.85
   _circleShootData:
+    poolType: 1
     sptire: {fileID: -1240950173, guid: 884add0348e5d88469d517f86250262b, type: 3}
     colliderRadius: 0
-    speed: 5.25
-    angle: 0
-  _circleShootDelay: 0.7
+    startSpeed: 3
+    endSpeed: 4.5
+    duration: 0.5
+    moveEaseType: 3
+  _circleShootDelay: 0.85
+  _spinShootData:
+    poolType: 1
+    sptire: {fileID: -1130582952, guid: 884add0348e5d88469d517f86250262b, type: 3}
+    colliderRadius: 0.1
+    startSpeed: 1.5
+    endSpeed: 2
+    duration: 0.5
+    moveEaseType: 3
+  _bigBulletData:
+    poolType: 1
+    sptire: {fileID: 176715816, guid: 884add0348e5d88469d517f86250262b, type: 3}
+    colliderRadius: 0.4
+    startSpeed: 2
+    endSpeed: 2.5
+    duration: 0.5
+    moveEaseType: 3
   _spawnBulletData:
+    poolType: 4
     sptire: {fileID: -1895263535, guid: 884add0348e5d88469d517f86250262b, type: 3}
     colliderRadius: 0
-    speed: 4
-    angle: 0
+    startSpeed: 1.5
+    endSpeed: 0
+    duration: 0
+    moveEaseType: 0
+  _spawningData:
+    poolType: 1
+    sptire: {fileID: -586911806, guid: 884add0348e5d88469d517f86250262b, type: 3}
+    colliderRadius: 0.09
+    startSpeed: 1.5
+    endSpeed: 2
+    duration: 0.5
+    moveEaseType: 3
   _spawnBulletCount: 2
-  _spawnBulletStartAngle: 0
+  _spawnBulletStartAngle: 90
   _spawnBulletAngle: 180
 --- !u!1 &1381329623
 GameObject:
@@ -5814,15 +5845,21 @@ MonoBehaviour:
   MaxStep: 0
   _gameArea: {fileID: 1488670376}
   _normalBulletData:
+    poolType: 2
     sptire: {fileID: -1832106541, guid: 8222e8f21711d6f4695d412e98787ded, type: 3}
     colliderRadius: 0
-    speed: 13
-    angle: 3
+    startSpeed: 13
+    endSpeed: 0
+    duration: 0
+    moveEaseType: 0
   _specialBulletData:
+    poolType: 2
     sptire: {fileID: 96536049, guid: 8222e8f21711d6f4695d412e98787ded, type: 3}
     colliderRadius: 0
-    speed: 8.5
-    angle: 6
+    startSpeed: 8.5
+    endSpeed: 0
+    duration: 0
+    moveEaseType: 0
   _normalSpeed: 4
   _slowSpeed: 2
   _shootDelay: 0.1
