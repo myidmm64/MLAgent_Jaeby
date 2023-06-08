@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8049902139464448529}
   - component: {fileID: 766454980718084159}
   - component: {fileID: 4075981275771325967}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MovingBulletSpawner
   m_TagString: Bullet
   m_Icon: {fileID: 0}

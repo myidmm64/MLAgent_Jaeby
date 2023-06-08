@@ -66,6 +66,7 @@ public class PlayerAgent : Agent
         StartCoroutine(ShootCoroutine());
 
         _hp = _maxHp;
+        transform.position = _gameArea.transform.position + new Vector3(0f,-3f,0f);
         OnEpisodeBeginAction?.Invoke();
     }
 
@@ -113,6 +114,8 @@ public class PlayerAgent : Agent
         _rigid.velocity = new Vector2(actions.ContinuousActions[0], actions.ContinuousActions[1]).normalized * speed;
         int hori = Mathf.RoundToInt(actions.ContinuousActions[0]);
         _animator.SetInteger("Horizontal", hori);
+
+        AddReward(0.001f);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -131,7 +134,12 @@ public class PlayerAgent : Agent
         UIManager.Instance.UpdatePlayerHP(_gameArea);
         if (_hp <= 0)
         {
+            AddReward(-1f);
             EndEpisode();
+        }
+        else
+        {
+            AddReward(-0.3f * value);
         }
     }
 

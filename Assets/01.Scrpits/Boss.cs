@@ -67,10 +67,11 @@ public class Boss : MonoBehaviour
 
         MoveAnimationPlay(0);
         transform.DOKill();
-        transform.position = _originPosition;
+        transform.position = _gameArea.transform.position + _originPosition;
         _curHP = _maxHP;
         UIManager.Instance.UpdateBossHP(_gameArea, _maxHP, _curHP);
-        Invoke("Phase" + StartPhase, 0f);
+        PhaseOne();
+        //Invoke("Phase" + StartPhase, 0f);
     }
 
     private void PatternsReset()
@@ -90,6 +91,7 @@ public class Boss : MonoBehaviour
 
     private void PhaseTwo()
     {
+        _gameArea.Player.GetComponent<PlayerAgent>().AddReward(0.5f);
         _bossCoroutines.Add("PhaseTwo", StartCoroutine(PhaseTwoCoroutine()));
     }
 
@@ -144,13 +146,13 @@ public class Boss : MonoBehaviour
         Sequence moveSeq = _bossSequences["RandomMove"];
         for (int i = 0; i < count; i++)
         {
-            Vector3 randomPosition = new Vector3(Random.Range(MinBoundary.x, MaxBoundary.x), Random.Range(1.8f, MaxBoundary.y), 0f);
+            Vector3 randomPosition = _gameArea.transform.position + new Vector3(Random.Range(MinBoundary.x, MaxBoundary.x), Random.Range(1.8f, MaxBoundary.y), 0f);
             moveSeq.Append(transform.DOMove(randomPosition, _moveDelay).OnStart(() =>
             {
                 MoveAnimationPlay((randomPosition.x - transform.position.x) < 0 ? -1 : 1);
             }));
         }
-        moveSeq.Append(transform.DOMove(_originPosition, _moveDelay))
+        moveSeq.Append(transform.DOMove(_gameArea.transform.position + _originPosition, _moveDelay))
             .OnComplete(() =>
             {
                 StopCoroutine(_bossCoroutines["CircleShoot"]);
@@ -185,7 +187,12 @@ public class Boss : MonoBehaviour
 
         if (_curHP <= 0)
         {
+            _gameArea.Player.GetComponent<PlayerAgent>().AddReward(10f);
             DieAction?.Invoke();
+        }
+        else
+        {
+            _gameArea.Player.GetComponent<PlayerAgent>().AddReward(0.001f);
         }
     }
 
