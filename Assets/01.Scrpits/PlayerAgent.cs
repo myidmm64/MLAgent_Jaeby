@@ -51,6 +51,8 @@ public class PlayerAgent : Agent
 
     public override void Initialize()
     {
+        Application.runInBackground = true;
+
         _colliderSpriteRenderer = transform.Find("Collider").GetComponent<SpriteRenderer>();
         _animator = transform.Find("Renderer").GetComponent<Animator>();
         _obAnimator = _animator.transform.Find("Obs").GetComponent<Animator>();
@@ -74,15 +76,20 @@ public class PlayerAgent : Agent
     {
         while (true)
         {
-            BulletUtility.AngleShoot<NormalBullet>(_gameArea, _normalBulletData, transform.position
+            List<NormalBullet> bull = BulletUtility.AngleShoot<NormalBullet>(_gameArea, _normalBulletData, transform.position
                 , 6, 0f, 3f);
 
             int spe = UnityEngine.Random.Range(1, 4);
             List<NormalBullet> bullets = BulletUtility.AngleShoot<NormalBullet>(_gameArea, _specialBulletData, transform.position
                 , spe, 0f, 6f);
 
+            for (int i = 0; i < bull.Count; i++)
+                bull[i].transform.SetParent(_gameArea.PlayerBulletFactory);
             for (int i = 0; i < bullets.Count; i++)
+            {
+                bullets[i].transform.SetParent(_gameArea.PlayerBulletFactory);
                 bullets[i].transform.localScale = new Vector3(2f, 0.5f, 1f);
+            }
 
             yield return new WaitForSeconds(_shootDelay);
         }
@@ -111,18 +118,21 @@ public class PlayerAgent : Agent
             _fadeSeq.Append(_colliderSpriteRenderer.DOFade(targetAlpha, 0.25f));
         }
 
-        _rigid.velocity = new Vector2(actions.ContinuousActions[0], actions.ContinuousActions[1]).normalized * speed;
-        int hori = Mathf.RoundToInt(actions.ContinuousActions[0]);
+        _rigid.velocity = new Vector2(actions.ContinuousActions.Array[0], actions.ContinuousActions.Array[1]).normalized * speed;
+        int hori = Mathf.RoundToInt(actions.ContinuousActions.Array[0]);
         _animator.SetInteger("Horizontal", hori);
 
         AddReward(0.001f);
+        if (actions.ContinuousActions.Array[2] < 0.5f)
+            AddReward(0.002f);
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var continuous = actionsOut.ContinuousActions;
-        continuous.Array[0] = Input.GetAxisRaw("Horizontal");
-        continuous.Array[1] = Input.GetAxisRaw("Vertical");
+        continuous.Array[0] = (float)Input.GetAxisRaw("Horizontal");
+        continuous.Array[1] = (float)Input.GetAxisRaw("Vertical");
+        continuous.Array[2] = (float)Mathf.Abs(_gameArea.boss.transform.position.x - transform.position.x);
 
         var discreate = actionsOut.DiscreteActions;
         discreate.Array[0] = Input.GetKey(KeyCode.LeftShift) ? 1 : 0;
@@ -134,12 +144,12 @@ public class PlayerAgent : Agent
         UIManager.Instance.UpdatePlayerHP(_gameArea);
         if (_hp <= 0)
         {
-            AddReward(-1f);
+            AddReward(-3f);
             EndEpisode();
         }
         else
         {
-            AddReward(-0.3f * value);
+            AddReward(-1f * value);
         }
     }
 
@@ -147,7 +157,7 @@ public class PlayerAgent : Agent
     {
         if (collision.CompareTag("Bullet"))
         {
-            _gameArea.DestoryAllBullet();
+            _gameArea.DestoryAllBullet(BulletTag.Bullet);
             Damaged(1);
         }
     }

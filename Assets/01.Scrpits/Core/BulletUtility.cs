@@ -48,4 +48,39 @@ public static class BulletUtility
         }
         return result;
     }
+
+    public static List<T> BoundaryShoot<T>(GameArea area, BulletData bulletData, Vector2 MinBoundary, Vector2 MaxBoundary, Vector3 targetVector, int width, int height) where T : Bullet
+    {
+        List<T> result = new List<T>();
+        for (int i = 0; i < width; i++)
+        {
+            float stepX = (MaxBoundary.x - MinBoundary.x) / width;
+            Vector3 downPos = area.transform.position + new Vector3(MinBoundary.x + stepX * i,
+                MinBoundary.y);
+            Vector3 upPos = area.transform.position + new Vector3(MinBoundary.x + stepX * i,
+                MaxBoundary.y);
+            //아래
+            BulletSpawn<T>(area, bulletData, downPos
+                , LookTarget(downPos, targetVector));
+            //위
+            BulletSpawn<T>(area, bulletData, upPos
+                , LookTarget(upPos, targetVector));
+        }
+
+        for (int i = 0; i < height; i++)
+        {
+            float stepY = (MaxBoundary.y - MinBoundary.y) / height;
+            Vector3 leftPos = area.transform.position + new Vector3(MinBoundary.x,
+                MinBoundary.y + stepY * i);
+            Vector3 rightPos = area.transform.position + new Vector3(MaxBoundary.x,
+                MinBoundary.y + stepY * i);
+            //왼쪽ㄱ
+            BulletSpawn<T>(area, bulletData, leftPos
+               , LookTarget(leftPos, targetVector));
+            //오른쪽
+            BulletSpawn<T>(area, bulletData, rightPos
+                , LookTarget(rightPos, targetVector));
+        }
+        return result;
+    }
 }

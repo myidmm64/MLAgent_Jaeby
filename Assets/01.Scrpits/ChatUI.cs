@@ -22,7 +22,7 @@ public class ChatUI : MonoBehaviour
         _nameText.SetText(userName);
         _nameText.color = userColor;
         _chatText.SetText(chat);
-        for(int i = 0; i< icons.Length; i++) 
+        for(int i = 0; i< icons.Length; i++)
         {
             Image image = Instantiate(_iconImagePrefab, _iconImageParentTrm).GetComponent<Image>();
             image.sprite = icons[i];
